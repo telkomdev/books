@@ -1,0 +1,124 @@
+1. add box ubuntu/xenial64
+$ vagrant box add ubuntu/xenial64
+
+2. init project
+$ vagrant init ubuntu/xenial64
+
+3. start vagrant
+$ vagrant up
+
+4. get into VM
+$ vagrant ssh
+
+5. login as a super user
+$ sudo su
+
+6. update source list
+$ apt-get update
+
+7. install python software properties
+$ apt-get install python-software-properties
+
+8. install JRE
+$ apt-get install openjdk-8-jre-headless
+
+9. install JDK
+$ apt-get install openjdk-8-jdk-headless
+
+10. download HADOOP
+$ wget https://archive.apache.org/dist/hadoop/common/hadoop-3.1.2/hadoop-3.1.2.tar.gz
+
+11. untar HADOOP
+$ tar xzf tar xzf hadoop-3.1.2.tar.gz
+
+13. rename
+$ mv hadoop-3.1.2 hadoop
+
+14. add hadoop env to .bashrc
+$ nano ~/.bashrc
+
+15. add following env to .bashrc
+export HADOOP_PREFIX="/data/hadoop"
+export PATH=$PATH:$HADOOP_PREFIX/bin
+export PATH=$PATH:$HADOOP_PREFIX/sbin
+export HADOOP_MAPRED_HOME=${HADOOP_PREFIX}
+export HADOOP_COMMON_HOME=${HADOOP_PREFIX}
+export HADOOP_HDFS_HOME=${HADOOP_PREFIX}
+export YARN_HOME=${HADOOP_PREFIX}
+
+16. add java env to etc/hadoop/hadoop-env.sh
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+
+17. add the following config to etc/hadoop/core-site.xml
+<configuration>
+        <property>
+                <name>fs.defaultFS</name>
+                <value>hdfs://localhost:9000</value>
+        </property>
+        <property>
+                <name>hadoop.tmp.dir</name>
+                <value>/data/hdata</value>
+        </property>
+</configuration>
+
+18. add the following config to etc/hadoop/hdfs-site.xml
+<configuration>
+        <property>
+                <name>dfs.replication</name>
+                <value>1</value>
+        </property>
+</configuration>
+
+19. add the following config to etc/hadoop/mapred-site.xml
+<configuration>
+<property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+<property>
+ <name>yarn.app.mapreduce.am.env</name>
+ <value>HADOOP_MAPRED_HOME=/data/hadoop</value>
+</property>
+<property>
+ <name>mapreduce.map.env</name>
+ <value>HADOOP_MAPRED_HOME=/data/hadoop</value>
+</property>
+<property>
+ <name>mapreduce.reduce.env</name>
+ <value>HADOOP_MAPRED_HOME=/data/hadoop</value>
+</property>
+</configuration>
+
+20. add the following config to etc/hadoop/yarn-site.xml
+<configuration>
+
+<!-- Site specific YARN configuration properties -->
+<property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+    </property>
+</configuration>
+
+21. before starting Hadoop, we need to format HDFS
+$ hdfs namenode -format
+
+22. start HDFS service
+$ start-dfs.sh
+
+23. if you getting error "ERROR: Attempting to operate on hdfs namenode as root", add the following env to etc/hadoop/hadoop-env.sh
+
+export HDFS_NAMENODE_USER="root"
+export HDFS_DATANODE_USER="root"
+export HDFS_SECONDARYNAMENODE_USER="root"
+export YARN_RESOURCEMANAGER_USER="root"
+export YARN_NODEMANAGER_USER="root"
+
+24. start yarn service
+$ start-yarn.sh
+
+25. visit yarn web console
+localhost:8088
