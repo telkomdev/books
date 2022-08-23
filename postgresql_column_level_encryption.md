@@ -28,19 +28,22 @@ $ psql --dbname=haha --host=localhost --username=haha --password
 ```
 
 - create sample table
+`bytea` as an alternative if you want to store encrypted `json` data, instead of`jsonb` 
 ```sql
 CREATE TABLE public.USERS (
     id serial primary key,
     email varchar not null unique,
-    credit_card varchar not null
+    credit_card varchar not null,
+    meta bytea
 );
 ```
 
 - insert sample data
 ```sql
-INSERT INTO USERS (EMAIL, CREDIT_CARD) VALUES (encode(pgp_sym_encrypt('alex@gmail.com', 'verystrongkey123'), 'base64'), encode(pgp_sym_encrypt('4797459275128533', 'verystrongkey123'), 'base64'));
-INSERT INTO USERS (EMAIL, CREDIT_CARD) VALUES (encode(pgp_sym_encrypt('bony@gmail.com', 'verystrongkey123'), 'base64'), encode(pgp_sym_encrypt('4455778542145936', 'verystrongkey123'), 'base64'));
-INSERT INTO USERS (EMAIL, CREDIT_CARD) VALUES (encode(pgp_sym_encrypt('sisy@gmail.com', 'verystrongkey123'), 'base64'), encode(pgp_sym_encrypt('4797472753193994', 'verystrongkey123'), 'base64'));
+INSERT INTO USERS (EMAIL, CREDIT_CARD, META) VALUES (encode(pgp_sym_encrypt('alex@gmail.com', 'verystrongkey123'), 'base64'), encode(pgp_sym_encrypt('4797459275128533', 'verystrongkey123'), 'base64'), pgp_sym_encrypt('{"age": 32, "phone": "081"}', 'verystrongkey123'));
+INSERT INTO USERS (EMAIL, CREDIT_CARD, META) VALUES (encode(pgp_sym_encrypt('bony@gmail.com', 'verystrongkey123'), 'base64'), encode(pgp_sym_encrypt('4455778542145936', 'verystrongkey123'), 'base64'), pgp_sym_encrypt('{"age": 32, "phone": "081"}', 'verystrongkey123'));
+INSERT INTO USERS (EMAIL, CREDIT_CARD, META) VALUES (encode(pgp_sym_encrypt('sisy@gmail.com', 'verystrongkey123'), 'base64'), encode(pgp_sym_encrypt('4797472753193994', 'verystrongkey123'), 'base64'), pgp_sym_encrypt('{"age": 32, "phone": "081"}', 'verystrongkey123'));
+
 ```
 
 - read data
@@ -50,4 +53,6 @@ SELECT pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') as EMA
 SELECT pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') as EMAIL_D, pgp_sym_decrypt(decode(CREDIT_CARD::text, 'base64'), 'verystrongkey123') as CC_D FROM USERS ORDER BY pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') ASC;
 
 SELECT pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') as EMAIL_D, pgp_sym_decrypt(decode(CREDIT_CARD::text, 'base64'), 'verystrongkey123') as CC_D FROM USERS ORDER BY pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') DESC;
+
+select pgp_sym_decrypt(meta::bytea, 'verystrongkey123') from users;
 ```
