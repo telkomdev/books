@@ -38,16 +38,16 @@ CREATE TABLE public.USERS (
 
 - insert sample data
 ```sql
-INSERT INTO USERS (EMAIL, CREDIT_CARD) VALUES ((pgp_sym_encrypt('alex@gmail.com', 'verystrongkey123')), (pgp_sym_encrypt('4797459275128533', 'verystrongkey123')));
-INSERT INTO USERS (EMAIL, CREDIT_CARD) VALUES ((pgp_sym_encrypt('bony@gmail.com', 'verystrongkey123')), (pgp_sym_encrypt('4455778542145936', 'verystrongkey123')));
-INSERT INTO USERS (EMAIL, CREDIT_CARD) VALUES ((pgp_sym_encrypt('sisy@gmail.com', 'verystrongkey123')), (pgp_sym_encrypt('4797472753193994', 'verystrongkey123')));
+INSERT INTO USERS (EMAIL, CREDIT_CARD) VALUES (encode(pgp_sym_encrypt('alex@gmail.com', 'verystrongkey123'), 'base64'), encode(pgp_sym_encrypt('4797459275128533', 'verystrongkey123'), 'base64'));
+INSERT INTO USERS (EMAIL, CREDIT_CARD) VALUES (encode(pgp_sym_encrypt('bony@gmail.com', 'verystrongkey123'), 'base64'), encode(pgp_sym_encrypt('4455778542145936', 'verystrongkey123'), 'base64'));
+INSERT INTO USERS (EMAIL, CREDIT_CARD) VALUES (encode(pgp_sym_encrypt('sisy@gmail.com', 'verystrongkey123'), 'base64'), encode(pgp_sym_encrypt('4797472753193994', 'verystrongkey123'), 'base64'));
 ```
 
 - read data
 ```sql
-SELECT pgp_sym_decrypt(EMAIL::bytea, 'verystrongkey123') as EMAIL_D, pgp_sym_decrypt(CREDIT_CARD::bytea, 'verystrongkey123') as CC_D FROM USERS WHERE pgp_sym_decrypt(EMAIL::bytea, 'verystrongkey123') LIKE 'a%';
+SELECT pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') as EMAIL_D, pgp_sym_decrypt(decode(CREDIT_CARD::text, 'base64'), 'verystrongkey123') as CC_D FROM USERS WHERE pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') LIKE 'a%';
 
-SELECT pgp_sym_decrypt(EMAIL::bytea, 'verystrongkey123') as EMAIL_D, pgp_sym_decrypt(CREDIT_CARD::bytea, 'verystrongkey123') as CC_D FROM USERS ORDER BY pgp_sym_decrypt(EMAIL::bytea, 'verystrongkey123') ASC;
+SELECT pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') as EMAIL_D, pgp_sym_decrypt(decode(CREDIT_CARD::text, 'base64'), 'verystrongkey123') as CC_D FROM USERS ORDER BY pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') ASC;
 
-SELECT pgp_sym_decrypt(EMAIL::bytea, 'verystrongkey123') as EMAIL_D, pgp_sym_decrypt(CREDIT_CARD::bytea, 'verystrongkey123') as CC_D FROM USERS ORDER BY pgp_sym_decrypt(EMAIL::bytea, 'verystrongkey123') DESC;
+SELECT pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') as EMAIL_D, pgp_sym_decrypt(decode(CREDIT_CARD::text, 'base64'), 'verystrongkey123') as CC_D FROM USERS ORDER BY pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') DESC;
 ```
