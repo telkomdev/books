@@ -1,3 +1,7 @@
+## Check cluster health
+```shell
+$ curl elasticsearch:9200/_cluster/health?pretty
+```
 ## List all index
 ```shell
 $ curl <elastic_host>/_cat/indices?v
