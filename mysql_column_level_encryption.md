@@ -22,6 +22,11 @@ create new user
 > CREATE USER 'wury'@'localhost' IDENTIFIED WITH mysql_native_password BY 'haha12345';
 ```
 
+Create new user allow `remote access`
+```shell
+> CREATE USER 'wury'@'%' IDENTIFIED WITH mysql_native_password BY 'haha12345';
+```
+
 create new database
 ```shell
 > CREATE DATABASE haha;
@@ -30,7 +35,12 @@ create new database
 grant user we just created to the database
 https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#privileges-provided-summary
 ```shell
-> GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES on haha.* TO 'wury'@'localhost' WITH GRANT OPTION;
+> GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES on `haha`.* TO 'wury'@'localhost' WITH GRANT OPTION;
+```
+
+grant user we just created to the database allow `remote access`
+```shell
+> GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES on `haha`.* TO 'wury'@'%' WITH GRANT OPTION;
 ```
 
 flush privileges
