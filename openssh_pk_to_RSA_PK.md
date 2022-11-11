@@ -23,3 +23,21 @@ Now your server_ssh.key looks like this
 b34ahC
 -----END RSA PRIVATE KEY-----
 ```
+
+### Error
+
+`permissions 0644 for are too open`
+
+The keys need to be read-writable only by you
+```shell
+$ chmod 600 server_ssh.key
+```
+
+`Failed to load key idrsa_data: invalid format`
+
+Add new line to the `server_ssh.key`
+```
+Tk3AQIDBAUGBw==
+-----END OPENSSH PRIVATE KEY----- (press Enter button here, to add new line)
+
+```
