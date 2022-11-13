@@ -70,3 +70,19 @@ Decrypt
 ```
 select pgp_sym_decrypt(decode('ww0ECQMC56dtkkLZ0/Bk0kQBKvBV9UHmZK3VS8Nj85O2kkLL29D1xRxbjf1rANSBkUmdfm9rAnJpVeZcuUmcOvqeB3Q3LmLgwShgh2JyWkAqDamHug==', 'base64'), 'verystrongkey123YjgyYmRhNTYtYjJi', 'compress-algo=1, cipher-algo=aes256');
 ```
+
+# Error
+### Reason Error: `ERROR:  invalid base64 end sequence`
+
+After execute `select encode(pgp_sym_encrypt` the result will be in two line
+```
+select encode(pgp_sym_encrypt('alex@gmail.com', 'verystrongkey123YjgyYmRhNTYtYjJi', 'compress-algo=1, cipher-algo=aes256'), 'base64');
+ ww0ECQMCsFBwOwoWwrd00kQBIQg+Ms3UknNfKNs/u+W8fC+QWc7t0QLqEn2UjWZRrA3sD0Y6jPML+
+ DZGeiUVsbIxuwTVbT2amjLmDLUYvas7SH4JrKg==
+ ```
+
+Remove the new line, and remove the `+` sign, and it will be
+```
+ww0ECQMCsFBwOwoWwrd00kQBIQg+Ms3UknNfKNs/u+W8fC+QWc7t0QLqEn2UjWZRrA3sD0Y6jPMLDZGeiUVsbIxuwTVbT2amjLmDLUYvas7SH4JrKg==
+```
+
