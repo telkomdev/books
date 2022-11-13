@@ -56,3 +56,17 @@ SELECT pgp_sym_decrypt(decode(EMAIL::text, 'base64'), 'verystrongkey123') as EMA
 
 select pgp_sym_decrypt(meta::bytea, 'verystrongkey123') from users;
 ```
+
+## Custom
+
+### using specific Algorithm
+
+Encrypt
+```
+select encode(pgp_sym_encrypt('alex@gmail.com', 'verystrongkey123YjgyYmRhNTYtYjJi', 'compress-algo=1, cipher-algo=aes256'), 'base64');
+```
+
+Decrypt
+```
+select pgp_sym_decrypt(decode('ww0ECQMC56dtkkLZ0/Bk0kQBKvBV9UHmZK3VS8Nj85O2kkLL29D1xRxbjf1rANSBkUmdfm9rAnJpVeZcuUmcOvqeB3Q3LmLgwShgh2JyWkAqDamHug==', 'base64'), 'verystrongkey123YjgyYmRhNTYtYjJi', 'compress-algo=1, cipher-algo=aes256');
+```
