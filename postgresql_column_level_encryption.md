@@ -71,6 +71,19 @@ Decrypt
 select pgp_sym_decrypt(decode('ww0ECQMC56dtkkLZ0/Bk0kQBKvBV9UHmZK3VS8Nj85O2kkLL29D1xRxbjf1rANSBkUmdfm9rAnJpVeZcuUmcOvqeB3Q3LmLgwShgh2JyWkAqDamHug==', 'base64'), 'verystrongkey123YjgyYmRhNTYtYjJi', 'compress-algo=1, cipher-algo=aes256');
 ```
 
+### Raw Encryption
+Encrypt
+```
+SELECT encode(encrypt('exampleplaintextxxmmx', 'YjgyYmRhNTYtYjJi', 'aes-ecb/pad:pkcs'), 'base64');
+ jYuiaf34desC1RXF3+ETyFFNBCpZYAOE+eEMcZPLJLY=
+```
+
+Decrypt
+```
+select convert_from(decrypt(decode('jYuiaf34desC1RXF3+ETyFFNBCpZYAOE+eEMcZPLJLY=', 'base64'), 'YjgyYmRhNTYtYjJi', 'aes-ecb/pad:pkcs'), 'UTF8');
+ exampleplaintextxxmmx
+```
+
 # Error
 ### Reason Error: `ERROR:  invalid base64 end sequence`
 
