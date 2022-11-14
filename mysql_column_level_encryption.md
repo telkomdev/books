@@ -91,7 +91,7 @@ show indexes
 ```
 
 create `Unique Index` for `email`.  
-we use the email_mac column, so we can index the values. if we use column email, we can't use it as index, because column value is always random when encrypted
+we use the `email_mac column`, so we can index the values. if we use column email, we can't use it as index, because `email column value` is always `random` when `encrypted`
 ```shell
 > CREATE UNIQUE INDEX idx_email ON USERS (email_mac);
 ```
