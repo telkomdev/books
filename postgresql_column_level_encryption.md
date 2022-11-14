@@ -84,6 +84,14 @@ select convert_from(decrypt(decode('jYuiaf34desC1RXF3+ETyFFNBCpZYAOE+eEMcZPLJLY=
  exampleplaintextxxmmx
 ```
 
+# hmac
+```shell
+> select encode(hmac('wuriyanto', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'sha256'), 'hex');
+------------------------------------------------------------------
+ 9f46bcc1bdc24ff2d4b6f811c1dd7e053089e515b0525c2b2a7ff25c28eb4240
+(1 row)
+```
+
 # Error
 ### Reason Error: `ERROR:  invalid base64 end sequence`
 
@@ -98,4 +106,5 @@ Remove the new line, and remove the `+` sign, and it will be
 ```
 ww0ECQMCsFBwOwoWwrd00kQBIQg+Ms3UknNfKNs/u+W8fC+QWc7t0QLqEn2UjWZRrA3sD0Y6jPMLDZGeiUVsbIxuwTVbT2amjLmDLUYvas7SH4JrKg==
 ```
+
 
