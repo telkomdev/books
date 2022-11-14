@@ -91,3 +91,34 @@ read data
 > SELECT AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') as EMAIL_D,AES_DECRYPT(FROM_BASE64(CREDIT_CARD), 'F3229A0B371ED2D9441B830D21A390C3') from USERS WHERE AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') LIKE 'al%';
 > SELECT AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') as EMAIL_D,AES_DECRYPT(FROM_BASE64(CREDIT_CARD), 'F3229A0B371ED2D9441B830D21A390C3') from USERS ORDER BY AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') DESC;
 ```
+
+### HMACSHA256
+https://github.com/fish3046/MySQL-SHA256-HMAC/blob/master/HMACSHA256.sql
+
+Login to MySQL as a `root`
+```shell
+$ sudo mysql
+mysql> use dbname
+```
+
+Create HMACSHA256 function
+```shell
+mysql> source /home/users/mysql-files/hmac_sha256.sql
+```
+
+Set Permission to user `wury` to execute `HMACSHA256` function
+```shell
+mysql> GRANT EXECUTE ON FUNCTION `haha`.`HMACSHA256` TO 'wury'@'localhost';
+```
+
+Test  `HMACSHA256` function
+```shell
+mysql> SELECT HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'wuriyanto');
++------------------------------------------------------------------+
+| HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'wuriyanto')      |
++------------------------------------------------------------------+
+| 9f46bcc1bdc24ff2d4b6f811c1dd7e053089e515b0525c2b2a7ff25c28eb4240 |
++------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+```
