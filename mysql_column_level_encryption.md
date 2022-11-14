@@ -217,6 +217,42 @@ END //
 DELIMITER ;
 ```
 
+Save sql script above to `aes.sql` . Create `EW_AES_ENCRYPT` and `EW_AES_DECRYPT` function from above script
+```shell
+mysql> source /home/users/mysql-files/aes.sql
+```
+
+Set Permission to user `wury` to execute `EW_AES_ENCRYPT` and `EW_AES_DECRYPT` function
+```shell
+mysql> GRANT EXECUTE ON FUNCTION `haha`.`EW_AES_ENCRYPT` TO 'wury'@'localhost';
+
+mysql> GRANT EXECUTE ON FUNCTION `haha`.`EW_AES_DECRYPT` TO 'wury'@'localhost';
+```
+
+Test  `EW_AES_ENCRYPT` function
+```shell
+mysql> SELECT EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com');
++----------------------------------------------------------------------+
+| EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com') |
++----------------------------------------------------------------------+
+| 569F9EAA1CA4F043A4BE284AAB71EC92AaO7oDIN5K6nAIbwK3W7bg==             |
++----------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+```
+
+Test  `EW_AES_DECRYPT` function
+```shell
+mysql> SELECT EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '569F9EAA1CA4F043A4BE284AAB71EC92AaO7oDIN5K6nAIbwK3W7bg==');
++----------------------------------------------------------------------------------------------------------------+
+| EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '569F9EAA1CA4F043A4BE284AAB71EC92AaO7oDIN5K6nAIbwK3W7bg==') |
++----------------------------------------------------------------------------------------------------------------+
+| alex@gmail.com                                                                                                 |
++----------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+```
+
 ### insert data
 ```shell
 > INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'));
