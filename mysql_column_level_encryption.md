@@ -107,23 +107,6 @@ mysql> SHOW INDEXES FROM USERS;
 +-------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
 ```
 
-### insert data
-```shell
-> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'));
-
-> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'bony@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'bony@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4455778542145936'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4455778542145936'));
-
-> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'));
-```
-
-### read data
-```shell
-> SELECT AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') as EMAIL from USERS;
-> SELECT AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') as EMAIL_D,AES_DECRYPT(FROM_BASE64(CREDIT_CARD), 'F3229A0B371ED2D9441B830D21A390C3') from USERS WHERE AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') = 'alex@gmail.com';
-> SELECT AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') as EMAIL_D,AES_DECRYPT(FROM_BASE64(CREDIT_CARD), 'F3229A0B371ED2D9441B830D21A390C3') from USERS WHERE AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') LIKE 'al%';
-> SELECT AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') as EMAIL_D,AES_DECRYPT(FROM_BASE64(CREDIT_CARD), 'F3229A0B371ED2D9441B830D21A390C3') from USERS ORDER BY AES_DECRYPT(FROM_BASE64(EMAIL), 'F3229A0B371ED2D9441B830D21A390C3') DESC;
-```
-
 ### HMACSHA256
 https://github.com/fish3046/MySQL-SHA256-HMAC/blob/master/HMACSHA256.sql
 
@@ -154,3 +137,102 @@ mysql> SELECT HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'wuriyanto');
 1 row in set (0.00 sec)
 
 ```
+
+### Using CBC mode with a 256 bit key
+```shell
+> SET block_encryption_mode = 'aes-256-cbc';
+```
+
+### Custom AES ENCRYPTION and DECRYPTION function
+```sql
+/*
+Modified by: telkomdev
+Date: 14/11/2022
+
+The MIT License (MIT)
+
+Copyright (c) 2022 The TelkomDev Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+DROP FUNCTION IF EXISTS EW_AES_ENCRYPT;
+DROP FUNCTION IF EXISTS EW_AES_DECRYPT;
+
+-- EW_AES_ENCRYPT
+DELIMITER //
+CREATE FUNCTION EW_AES_ENCRYPT(aes_key VARCHAR(64), plain_data VARCHAR(2048))
+    RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+
+DECLARE iv VARCHAR(32);
+DECLARE cipher_data VARCHAR(255);
+DECLARE result VARCHAR(287);
+
+SET iv = HEX(RANDOM_BYTES(16));
+
+SET cipher_data = TO_BASE64(AES_ENCRYPT(plain_data, aes_key, UNHEX(iv)));
+
+SET result = CONCAT(iv, cipher_data);
+
+return result;
+
+END //
+DELIMITER ;
+
+-- EW_AES_DECRYPT
+DELIMITER //
+CREATE FUNCTION EW_AES_DECRYPT(aes_key VARCHAR(64), encrypted_data VARCHAR(2048))
+    RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+
+DECLARE iv VARCHAR(32);
+DECLARE plain_data VARCHAR(255);
+DECLARE cipher_data VARCHAR(255);
+
+SET iv = SUBSTRING(encrypted_data, 1, 32);
+SET cipher_data = SUBSTRING(encrypted_data, 33, LENGTH(encrypted_data) - 32);
+
+SET plain_data = AES_DECRYPT(FROM_BASE64(cipher_data), aes_key, UNHEX(iv));
+
+return plain_data;
+
+END //
+DELIMITER ;
+```
+
+### insert data
+```shell
+> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'));
+
+> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'bony@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'bony@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4455778542145936'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4455778542145936'));
+
+> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'));
+```
+
+### read data
+```shell
+> SELECT EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) AS EMAIL FROM USERS;
+
+> SELECT EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) AS EMAIL FROM USERS ORDER BY EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) DESC;
+
+> SELECT EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) AS EMAIL FROM USERS WHERE EMAIL_MAC = HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com');
+```
+
+
