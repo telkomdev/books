@@ -72,8 +72,10 @@ create new table
 ```shell
 > CREATE TABLE USERS (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    email TEXT NOT NULL,
-    credit_card TEXT NOT NULL
+    email VARCHAR(255) NOT NULL,
+    email_mac VARCHAR(255) NOT NULL,
+    credit_card VARCHAR(255) NOT NULL,
+    credit_card_mac VARCHAR(255) NOT NULL
 );
 ```
 
