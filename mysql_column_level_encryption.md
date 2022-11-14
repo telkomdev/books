@@ -1,74 +1,74 @@
-### Mysql Column Level Symmetric Encryption with Encryption Function
+## Mysql Column Level Symmetric Encryption with Encryption Function
 
 https://dev.mysql.com/doc/refman/8.0/en/encryption-functions.html
 
-install Mysql Server
+### install Mysql Server
 ```shell
 $ sudo apt install mysql-server
 ```
 
-login as mysql super user
+### login as mysql super user
 ```shell
 > sudo mysql
 ```
 
-show all users 
+### show all users 
 ```shell
 > SELECT user,authentication_string,plugin,host FROM mysql.user;
 ```
 
-create new user
+## create new user
 ```shell
 > CREATE USER 'wury'@'localhost' IDENTIFIED WITH mysql_native_password BY 'haha12345';
 ```
 
-Create new user allow `remote access`
+### Create new user allow `remote access`
 ```shell
 > CREATE USER 'wury'@'%' IDENTIFIED WITH mysql_native_password BY 'haha12345';
 ```
 
-create new database
+### create new database
 ```shell
 > CREATE DATABASE haha;
 ```
 
-grant user we just created to the database
+### grant user we just created to the database
 https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#privileges-provided-summary
 ```shell
 > GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES on `haha`.* TO 'wury'@'localhost' WITH GRANT OPTION;
 ```
 
-grant user we just created to the database allow `remote access`
+### grant user we just created to the database allow `remote access`
 ```shell
 > GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES on `haha`.* TO 'wury'@'%' WITH GRANT OPTION;
 ```
 
-flush privileges
+### flush privileges
 ```shell
 > FLUSH PRIVILEGES;
 ```
 
-showing Grants for specific user
+### showing Grants for specific user
 ```shell
 > SHOW GRANTS FOR 'wury'@'localhost';
 ```
 
-login with new user we just created
+### login with new user we just created
 ```shell
 > mysql -u wury -h localhost -p
 ```
 
-change database
+### change database
 ```shell
 > use haha;
 ```
 
-show tables
+### show tables
 ```shell
 > show tables;
 ```
 
-create new table
+### create new table
 ```shell
 > CREATE TABLE USERS (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -77,6 +77,34 @@ create new table
     credit_card VARCHAR(255) NOT NULL,
     credit_card_mac VARCHAR(255) NOT NULL
 );
+```
+
+### create `Index`
+show indexes
+```shell
+> SHOW INDEXES FROM USERS;
++-------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| USERS |          0 | PRIMARY  |            1 | id          | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
++-------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+```
+
+create `Unique Index` for `email`.  
+we use the email_mac column, so we can index the values. if we use column email, we can't use it as index, because column value is always random when encrypted
+```shell
+> CREATE UNIQUE INDEX idx_email ON USERS (email_mac);
+```
+
+show indexes after we add new index
+```shell
+mysql> SHOW INDEXES FROM USERS;
++-------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table | Non_unique | Key_name  | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| USERS |          0 | PRIMARY   |            1 | id          | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
+| USERS |          0 | idx_email |            1 | email_mac   | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
++-------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
 ```
 
 insert data
