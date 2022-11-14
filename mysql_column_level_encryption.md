@@ -146,7 +146,7 @@ mysql> SELECT HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'wuriyanto');
 ### Custom AES ENCRYPTION and DECRYPTION function
 ```sql
 /*
-Modified by: telkomdev
+Created by: telkomdev team
 Date: 14/11/2022
 
 The MIT License (MIT)
