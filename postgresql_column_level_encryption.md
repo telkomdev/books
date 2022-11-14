@@ -85,6 +85,10 @@ select convert_from(decrypt(decode('jYuiaf34desC1RXF3+ETyFFNBCpZYAOE+eEMcZPLJLY=
 ```
 
 # hmac
+Calculates hashed MAC for data with key key. type is the same as in digest().
+
+This is similar to digest() but the hash can only be recalculated knowing the key. This prevents the scenario of someone altering data and also changing the hash to match.
+
 ```shell
 > select encode(hmac('wuriyanto', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'sha256'), 'hex');
 ------------------------------------------------------------------
