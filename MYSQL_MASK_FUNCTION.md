@@ -11,7 +11,7 @@ BEGIN
 
 DECLARE result VARCHAR(255);
 
-SET result = CONCAT(substr(plain_data, 1, CHAR_LENGTH(plain_data)/2), repeat('#', CHAR_LENGTH(plain_data)/2));
+SET result = CONCAT(substr(plain_data, 1, CHAR_LENGTH(plain_data)-FLOOR(CHAR_LENGTH(plain_data)*0.75)), repeat('*', FLOOR(CHAR_LENGTH(plain_data)*0.75)));
 
 return result;
 
@@ -22,8 +22,10 @@ DELIMITER ;
 Usage
 
 ```
-> SELECT EW_MASK('wuriyanto');
-+-----------------------------------------------------------------------------------------------------+
-| wuriy#####                                                                                          |
-+-----------------------------------------------------------------------------------------------------+
+mysql> select EW_MASK('wuriyanto');
++----------------------+
+| EW_MASK('wuriyanto') |
++----------------------+
+| wur******            |
++----------------------+
 ```
