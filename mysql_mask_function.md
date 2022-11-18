@@ -11,7 +11,8 @@ BEGIN
 
 DECLARE result VARCHAR(255);
 
-SET result = CONCAT(substr(plain_data, 1, CHAR_LENGTH(plain_data)-FLOOR(CHAR_LENGTH(plain_data)*0.75)), repeat('*', FLOOR(CHAR_LENGTH(plain_data)*0.75)));
+SET result = CONCAT(SUBSTR(plain_data, 1, CHAR_LENGTH(plain_data)-FLOOR(CHAR_LENGTH(plain_data)*0.75)), 
+    repeat('*', FLOOR(CHAR_LENGTH(plain_data)*0.75)), SUBSTR(plain_data, CHAR_LENGTH(plain_data), CHAR_LENGTH(plain_data)+1));
 
 return result;
 
@@ -26,6 +27,6 @@ mysql> select EW_MASK('wuriyanto');
 +----------------------+
 | EW_MASK('wuriyanto') |
 +----------------------+
-| wur******            |
+| wur*****o            |
 +----------------------+
 ```
