@@ -19,8 +19,8 @@ END //
 DELIMITER ;
 ```
 
-Usage
-
+### Usage
+This function will convert 75% of the content into the specified mask character. EG `*`
 ```
 mysql> select EW_MASK('wuriyanto');
 +----------------------+
