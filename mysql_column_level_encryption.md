@@ -110,6 +110,55 @@ mysql> SHOW INDEXES FROM USERS;
 ### HMACSHA256
 https://github.com/fish3046/MySQL-SHA256-HMAC/blob/master/HMACSHA256.sql
 
+### HMACSHA256 (Singlestore Version https://www.singlestore.com/)
+```sql
+-- here val is the message generate a HMAC for
+DELIMITER //
+CREATE OR REPLACE FUNCTION HMACSHA256(secret_key VARCHAR(256), val VARCHAR(2048))
+    RETURNS CHAR(64) AS
+    DECLARE 
+        ipad BINARY(64);
+        opad BINARY(64);
+        hexkey CHAR(128);
+        hmac CHAR(64);
+    BEGIN
+
+        hexkey = RPAD(HEX(secret_key), 128,"0");
+
+        IF LENGTH(secret_key) > 64 THEN
+            hexkey = RPAD(SHA2(secret_key, '256'), 128, "0");
+        END IF;
+
+        ipad = UNHEX(CONCAT(
+        LPAD(CONV(CONV( SUBSTRING(hexkey,1  ,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,17 ,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,33 ,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,49 ,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,65 ,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,81 ,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,97 ,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,113,16), 16, 10 ) ^ CONV( '3636363636363636', 16, 10 ),10,16),16,"0")
+        ));
+
+        opad = UNHEX(CONCAT(
+        LPAD(CONV(CONV( SUBSTRING(hexkey,1  ,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,17 ,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,33 ,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,49 ,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,65 ,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,81 ,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,97 ,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0"),
+        LPAD(CONV(CONV( SUBSTRING(hexkey,113,16), 16, 10 ) ^ CONV( '5c5c5c5c5c5c5c5c', 16, 10 ),10,16),16,"0")
+        ));
+
+        hmac = SHA2(CONCAT(opad, UNHEX(SHA2(CONCAT(ipad, val), '256'))), '256');
+
+        RETURN hmac;
+
+    END //
+DELIMITER ;
+```
+
 Login to MySQL as a `root`
 ```shell
 $ sudo mysql
