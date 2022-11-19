@@ -111,4 +111,69 @@ Remove the new line, and remove the `+` sign, and it will be
 ww0ECQMCsFBwOwoWwrd00kQBIQg+Ms3UknNfKNs/u+W8fC+QWc7t0QLqEn2UjWZRrA3sD0Y6jPMLDZGeiUVsbIxuwTVbT2amjLmDLUYvas7SH4JrKg==
 ```
 
+## Custom AES ENCRYPTION and DECRYPTION function
+```sql
+/*
+Created by: telkomdev team
+Date: 14/11/2022
 
+The MIT License (MIT)
+
+Copyright (c) 2022 The TelkomDev Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+*/
+-- ew_aes_encrypt
+CREATE OR REPLACE FUNCTION ew_aes_encrypt(aes_key VARCHAR, plain_data VARCHAR) 
+    RETURNS VARCHAR
+    LANGUAGE plpgsql
+AS 
+$$
+DECLARE
+    iv VARCHAR;
+    cipher_data VARCHAR;                                                   
+    result VARCHAR;    
+BEGIN
+    iv = ENCODE(GEN_RANDOM_BYTES(16), 'hex');
+    cipher_data = ENCODE(encrypt_iv(plain_data::bytea, aes_key::bytea, DECODE(iv, 'hex'), 'aes-cbc/pad:pkcs'), 'hex');
+    result = CONCAT(iv, cipher_data);
+    RETURN result;                            
+END;  
+$$;
+
+-- ew_aes_decrypt
+CREATE OR REPLACE FUNCTION ew_aes_decrypt(aes_key VARCHAR, encrypted_data VARCHAR) 
+    RETURNS VARCHAR
+    LANGUAGE plpgsql
+AS 
+$$
+DECLARE
+    iv VARCHAR;
+    cipher_data VARCHAR;                                                   
+    result VARCHAR;    
+BEGIN
+    iv = SUBSTRING(encrypted_data, 1, 32);
+    cipher_data = SUBSTRING(encrypted_data, 33, LENGTH(encrypted_data) - 32);
+    result = convert_from(decrypt_iv(decode(cipher_data, 'hex'), aes_key::bytea, DECODE(iv, 'hex'), 'aes-cbc/pad:pkcs'), 'UTF8');
+    RETURN result;                            
+END;  
+$$;
+```
