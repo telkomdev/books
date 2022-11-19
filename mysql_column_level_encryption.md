@@ -149,7 +149,7 @@ To use AES with  key length of 256 bits and the CBC mode:
 > SET block_encryption_mode = 'aes-256-cbc';
 ```
 
-### Custom AES ENCRYPTION and DECRYPTION function
+### Custom AES-256-CBC ENCRYPTION and DECRYPTION function
 ```sql
 /*
 Created by: telkomdev team
