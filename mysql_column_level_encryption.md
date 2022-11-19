@@ -229,6 +229,72 @@ END //
 DELIMITER ;
 ```
 
+### Custom AES-256-CBC ENCRYPTION and DECRYPTION function (Singlestore Version https://www.singlestore.com/)
+```sql
+/*
+Created by: telkomdev team
+Date: 14/11/2022
+
+The MIT License (MIT)
+
+Copyright (c) 2022 The TelkomDev Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+-- EW_AES_ENCRYPT
+DELIMITER //
+CREATE OR REPLACE FUNCTION EW_AES_ENCRYPT(aes_key VARCHAR(64), plain_data VARCHAR(2048))
+    RETURNS VARCHAR(255) AS
+    DECLARE
+        iv VARCHAR(32);
+        cipher_data VARCHAR(255);
+        result VARCHAR(287);
+    BEGIN
+
+        iv = HEX(sys_guid());
+        cipher_data = HEX(AES_ENCRYPT(plain_data, aes_key, UNHEX(iv), 'aes-256-cbc'));
+        result = CONCAT(iv, cipher_data);
+        return result;
+
+    END //
+DELIMITER ;
+
+-- EW_AES_DECRYPT
+DELIMITER //
+CREATE OR REPLACE FUNCTION EW_AES_DECRYPT(aes_key VARCHAR(64), encrypted_data VARCHAR(2048))
+    RETURNS VARCHAR(255) AS
+    DECLARE 
+        iv VARCHAR(32);
+        plain_data VARCHAR(255);
+        cipher_data VARCHAR(255);
+    BEGIN
+
+        iv = SUBSTRING(encrypted_data, 1, 32);
+        cipher_data = SUBSTRING(encrypted_data, 33, LENGTH(encrypted_data) - 32);
+        plain_data = AES_DECRYPT(UNHEX(cipher_data), aes_key, UNHEX(iv), 'aes-256-cbc');
+        return plain_data;
+
+    END //
+DELIMITER ;
+```
+
 Save sql script above to `aes.sql` . Create `EW_AES_ENCRYPT` and `EW_AES_DECRYPT` function from above script
 ```shell
 mysql> source /home/users/mysql-files/aes.sql
