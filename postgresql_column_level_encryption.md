@@ -141,8 +141,8 @@ THE SOFTWARE.
 
 
 */
--- ew_aes_encrypt
-CREATE OR REPLACE FUNCTION ew_aes_encrypt(aes_key VARCHAR, plain_data VARCHAR) 
+-- EW_AES_256_CBC_ENCRYPT
+CREATE OR REPLACE FUNCTION EW_AES_256_CBC_ENCRYPT(aes_key VARCHAR, plain_data VARCHAR) 
     RETURNS VARCHAR
     LANGUAGE plpgsql
 AS 
@@ -159,8 +159,8 @@ BEGIN
 END;  
 $$;
 
--- ew_aes_decrypt
-CREATE OR REPLACE FUNCTION ew_aes_decrypt(aes_key VARCHAR, encrypted_data VARCHAR) 
+-- EW_AES_256_CBC_DECRYPT
+CREATE OR REPLACE FUNCTION EW_AES_256_CBC_DECRYPT(aes_key VARCHAR, encrypted_data VARCHAR) 
     RETURNS VARCHAR
     LANGUAGE plpgsql
 AS 
