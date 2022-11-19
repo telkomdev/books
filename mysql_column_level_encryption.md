@@ -187,7 +187,7 @@ DECLARE result VARCHAR(287);
 
 SET iv = HEX(RANDOM_BYTES(16));
 
-SET cipher_data = TO_BASE64(AES_ENCRYPT(plain_data, aes_key, UNHEX(iv)));
+SET cipher_data = HEX(AES_ENCRYPT(plain_data, aes_key, UNHEX(iv)));
 
 SET result = CONCAT(iv, cipher_data);
 
@@ -209,7 +209,7 @@ DECLARE cipher_data VARCHAR(255);
 SET iv = SUBSTRING(encrypted_data, 1, 32);
 SET cipher_data = SUBSTRING(encrypted_data, 33, LENGTH(encrypted_data) - 32);
 
-SET plain_data = AES_DECRYPT(FROM_BASE64(cipher_data), aes_key, UNHEX(iv));
+SET plain_data = AES_DECRYPT(UNHEX(cipher_data), aes_key, UNHEX(iv));
 
 return plain_data;
 
