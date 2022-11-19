@@ -139,7 +139,7 @@ mysql> SELECT HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'wuriyanto');
 ```
 
 ### Using CBC mode with a 256 bit key
-By default AES_ENCRYPT() and AES_DECRYPT()  functions implement:
+By default `AES_ENCRYPT()` and `AES_DECRYPT()`  functions implement:
 ```
 Default Value	aes-128-ecb
 ```
