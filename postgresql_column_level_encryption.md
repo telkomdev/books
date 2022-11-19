@@ -111,7 +111,7 @@ Remove the new line, and remove the `+` sign, and it will be
 ww0ECQMCsFBwOwoWwrd00kQBIQg+Ms3UknNfKNs/u+W8fC+QWc7t0QLqEn2UjWZRrA3sD0Y6jPMLDZGeiUVsbIxuwTVbT2amjLmDLUYvas7SH4JrKg==
 ```
 
-## Custom AES ENCRYPTION and DECRYPTION function
+## Custom AES-256-CBC ENCRYPTION and DECRYPTION function
 ```sql
 /*
 Created by: telkomdev team
