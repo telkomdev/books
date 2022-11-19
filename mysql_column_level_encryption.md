@@ -191,6 +191,9 @@ DECLARE iv VARCHAR(32);
 DECLARE cipher_data VARCHAR(255);
 DECLARE result VARCHAR(287);
 
+-- Always force to use AES with key length of 256 bits and the CBC mode
+SET block_encryption_mode = 'aes-256-cbc';
+
 SET iv = HEX(RANDOM_BYTES(16));
 
 SET cipher_data = HEX(AES_ENCRYPT(plain_data, aes_key, UNHEX(iv)));
@@ -211,6 +214,9 @@ BEGIN
 DECLARE iv VARCHAR(32);
 DECLARE plain_data VARCHAR(255);
 DECLARE cipher_data VARCHAR(255);
+
+-- Always force to use AES with key length of 256 bits and the CBC mode
+SET block_encryption_mode = 'aes-256-cbc';
 
 SET iv = SUBSTRING(encrypted_data, 1, 32);
 SET cipher_data = SUBSTRING(encrypted_data, 33, LENGTH(encrypted_data) - 32);
