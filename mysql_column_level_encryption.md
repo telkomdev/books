@@ -309,12 +309,12 @@ THE SOFTWARE.
 
 -- EW_AES_ENCRYPT
 DELIMITER //
-CREATE OR REPLACE FUNCTION EW_AES_ENCRYPT(aes_key VARCHAR(64), plain_data VARCHAR(2048))
-    RETURNS VARCHAR(255) AS
+CREATE OR REPLACE FUNCTION EW_AES_ENCRYPT(aes_key VARCHAR(64), plain_data LONGTEXT)
+    RETURNS LONGTEXT AS
     DECLARE
         iv VARCHAR(32);
-        cipher_data VARCHAR(255);
-        result VARCHAR(287);
+        cipher_data LONGTEXT;
+        result LONGTEXT;
     BEGIN
 
         iv = HEX(sys_guid());
@@ -327,12 +327,12 @@ DELIMITER ;
 
 -- EW_AES_DECRYPT
 DELIMITER //
-CREATE OR REPLACE FUNCTION EW_AES_DECRYPT(aes_key VARCHAR(64), encrypted_data VARCHAR(2048))
-    RETURNS VARCHAR(255) AS
+CREATE OR REPLACE FUNCTION EW_AES_DECRYPT(aes_key VARCHAR(64), encrypted_data LONGTEXT)
+    RETURNS LONGTEXT AS
     DECLARE 
         iv VARCHAR(32);
-        plain_data VARCHAR(255);
-        cipher_data VARCHAR(255);
+        plain_data LONGTEXT;
+        cipher_data LONGTEXT;
     BEGIN
 
         iv = SUBSTRING(encrypted_data, 1, 32);
