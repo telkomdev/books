@@ -177,3 +177,18 @@ BEGIN
 END;  
 $$;
 ```
+
+### Usage
+```
+haha=> SELECT ew_aes_encrypt('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com');
+                          ew_aes_encrypt
+------------------------------------------------------------------
+ 766eef4290baa51f67d36a7c2ff937e877c7c63a48a7c7a8143cb3d6affe576e
+(1 row)
+
+haha=> SELECT ew_aes_decrypt('abc$#128djdyAgbjau&YAnmcbagryt5x', '766eef4290baa51f67d36a7c2ff937e877c7c63a48a7c7a8143cb3d6affe576e');
+ ew_aes_decrypt
+----------------
+ alex@gmail.com
+(1 row)
+```
