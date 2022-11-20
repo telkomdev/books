@@ -356,7 +356,7 @@ mysql> GRANT EXECUTE ON FUNCTION `haha`.`EW_AES_256_CBC_ENCRYPT` TO 'wury'@'loca
 mysql> GRANT EXECUTE ON FUNCTION `haha`.`EW_AES_256_CBC_DECRYPT` TO 'wury'@'localhost';
 ```
 
-Test  `EW_AES_ENCRYPT` function
+Test  `EW_AES_256_CBC_ENCRYPT` function
 ```shell
 mysql> SELECT EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com');
 +----------------------------------------------------------------------+
