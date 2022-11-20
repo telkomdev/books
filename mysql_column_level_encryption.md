@@ -344,23 +344,23 @@ CREATE OR REPLACE FUNCTION EW_AES_256_CBC_DECRYPT(aes_key VARCHAR(64), encrypted
 DELIMITER ;
 ```
 
-Save sql script above to `aes.sql` . Create `EW_AES_ENCRYPT` and `EW_AES_DECRYPT` function from above script
+Save sql script above to `aes.sql` . Create `EW_AES_256_CBC_ENCRYPT` and `EW_AES_256_CBC_DECRYPT` function from above script
 ```shell
 mysql> source /home/users/mysql-files/aes.sql
 ```
 
-Set Permission to user `wury` to execute `EW_AES_ENCRYPT` and `EW_AES_DECRYPT` function
+Set Permission to user `wury` to execute `EW_AES_256_CBC_ENCRYPT` and `EW_AES_256_CBC_DECRYPT` function
 ```shell
-mysql> GRANT EXECUTE ON FUNCTION `haha`.`EW_AES_ENCRYPT` TO 'wury'@'localhost';
+mysql> GRANT EXECUTE ON FUNCTION `haha`.`EW_AES_256_CBC_ENCRYPT` TO 'wury'@'localhost';
 
-mysql> GRANT EXECUTE ON FUNCTION `haha`.`EW_AES_DECRYPT` TO 'wury'@'localhost';
+mysql> GRANT EXECUTE ON FUNCTION `haha`.`EW_AES_256_CBC_DECRYPT` TO 'wury'@'localhost';
 ```
 
 Test  `EW_AES_ENCRYPT` function
 ```shell
-mysql> SELECT EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com');
+mysql> SELECT EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com');
 +----------------------------------------------------------------------+
-| EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com') |
+| EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com') |
 +----------------------------------------------------------------------+
 | 569F9EAA1CA4F043A4BE284AAB71EC92AaO7oDIN5K6nAIbwK3W7bg==             |
 +----------------------------------------------------------------------+
@@ -368,11 +368,11 @@ mysql> SELECT EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com
 
 ```
 
-Test  `EW_AES_DECRYPT` function
+Test  `EW_AES_256_CBC_DECRYPT` function
 ```shell
-mysql> SELECT EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '569F9EAA1CA4F043A4BE284AAB71EC92AaO7oDIN5K6nAIbwK3W7bg==');
+mysql> SELECT EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '569F9EAA1CA4F043A4BE284AAB71EC92AaO7oDIN5K6nAIbwK3W7bg==');
 +----------------------------------------------------------------------------------------------------------------+
-| EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '569F9EAA1CA4F043A4BE284AAB71EC92AaO7oDIN5K6nAIbwK3W7bg==') |
+| EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '569F9EAA1CA4F043A4BE284AAB71EC92AaO7oDIN5K6nAIbwK3W7bg==') |
 +----------------------------------------------------------------------------------------------------------------+
 | alex@gmail.com                                                                                                 |
 +----------------------------------------------------------------------------------------------------------------+
@@ -382,20 +382,20 @@ mysql> SELECT EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '569F9EAA1CA4F0
 
 ### insert data
 ```shell
-> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'));
+> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'));
 
-> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'bony@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'bony@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4455778542145936'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4455778542145936'));
+> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'bony@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'bony@gmail.com'), EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4455778542145936'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4455778542145936'));
 
-> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), EW_AES_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'));
+> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'), HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'));
 ```
 
 ### read data
 ```shell
-> SELECT EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) AS EMAIL FROM USERS;
+> SELECT EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) AS EMAIL FROM USERS;
 
-> SELECT EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) AS EMAIL FROM USERS ORDER BY EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) DESC;
+> SELECT EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) AS EMAIL FROM USERS ORDER BY EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) DESC;
 
-> SELECT EW_AES_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) AS EMAIL FROM USERS WHERE EMAIL_MAC = HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com');
+> SELECT EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) AS EMAIL FROM USERS WHERE EMAIL_MAC = HMACSHA256('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com');
 ```
 
 
