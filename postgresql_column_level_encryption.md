@@ -153,7 +153,7 @@ DECLARE
     result VARCHAR;    
 BEGIN
     iv = ENCODE(GEN_RANDOM_BYTES(16), 'hex');
-    cipher_data = ENCODE(encrypt_iv(plain_data::bytea, aes_key::bytea, DECODE(iv, 'hex'), 'aes-cbc/pad:pkcs'), 'hex');
+    cipher_data = ENCODE(ENCRYPT_IV(plain_data::bytea, aes_key::bytea, DECODE(iv, 'hex'), 'aes-cbc/pad:pkcs'), 'hex');
     result = CONCAT(iv, cipher_data);
     RETURN result;                            
 END;  
@@ -172,7 +172,7 @@ DECLARE
 BEGIN
     iv = SUBSTRING(encrypted_data, 1, 32);
     cipher_data = SUBSTRING(encrypted_data, 33, LENGTH(encrypted_data) - 32);
-    result = convert_from(decrypt_iv(decode(cipher_data, 'hex'), aes_key::bytea, DECODE(iv, 'hex'), 'aes-cbc/pad:pkcs'), 'UTF8');
+    result = CONVERT_FROM(DECRYPT_IV(DECODE(cipher_data, 'hex'), aes_key::bytea, DECODE(iv, 'hex'), 'aes-cbc/pad:pkcs'), 'UTF8');
     RETURN result;                            
 END;  
 $$;
