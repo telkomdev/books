@@ -32,12 +32,12 @@ $ select extname from pg_extension ;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ```
 
-### Create the prosody user `haha`.
+### Create the user `haha` for database `haha`.
 ```shell
 $ postgres=# CREATE USER haha WITH PASSWORD 'haha12345';
 ```
 
-### Grant the user access to the `haha` database.
+### Grant the user `haha` access to the `haha` database.
 ```shell
 $ postgres=# GRANT ALL PRIVILEGES ON DATABASE haha to haha;
 ```
