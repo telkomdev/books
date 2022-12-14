@@ -7,9 +7,19 @@ https://www.postgresql.org/docs/current/pgcrypto.html#id-1.11.7.35.8
 $ sudo --login --user postgres
 ```
 
+### Start the PostgreSQL interactive terminal.
+```shell
+$ psql
+```
+
+### Create the database `haha`
+```shell
+$ postgres=# CREATE DATABASE haha;
+```
+
 - connect to specific Database
 ```shell
-$ \c database_name;
+$ \c haha;
 ```
 
 - show installed extensions
@@ -20,6 +30,26 @@ $ select extname from pg_extension ;
 - create pgcrypto EXTENSION
 ```shell
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+```
+
+### Create the prosody user `haha`.
+```shell
+$ postgres=# CREATE USER haha WITH PASSWORD 'haha12345';
+```
+
+### Grant the user access to the `haha` database.
+```shell
+$ postgres=# GRANT ALL PRIVILEGES ON DATABASE haha to haha;
+```
+
+### Exit the PostgreSQL interactive terminal
+```shell
+$ postgres=# \q
+```
+
+### Log out of the postgres root.
+```shell
+$ exit
 ```
 
 - login with user created
