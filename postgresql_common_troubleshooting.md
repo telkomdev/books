@@ -1,6 +1,6 @@
 ## Postgresql Common Troubleshooting
 
-### `PostgreSQL Error: cannot execute in a read-only transaction`
+### Error `PostgreSQL Error: cannot execute in a read-only transaction`
 Reason: PostgreSQL server is recovery(read-only) or standby mode.
 Solution: We have to remove recovery (read-only or standby mode file, usually located on `/var/lib/postgresql/<version>/main/<standby | recovery>.signal`
 
