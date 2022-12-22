@@ -209,6 +209,7 @@ $$;
 ```
 
 ### Usage
+
 ```
 haha=> SELECT EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com');
                           ew_aes_encrypt
@@ -221,4 +222,31 @@ haha=> SELECT EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '766eef
 ----------------
  alex@gmail.com
 (1 row)
+```
+
+### Create New Table
+```sql
+CREATE TABLE public.USERS (
+    id serial primary key,
+    email varchar not null,
+    email_mac varchar not null,
+    credit_card varchar not null,
+    credit_card_mac varchar not null
+);
+```
+
+### Insert Data
+```shell
+> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'alex@gmail.com'), ENCODE(HMAC('alex@gmail.com', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX'), EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797459275128533'), ENCODE(HMAC('4797459275128533', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX'));
+
+> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'bony@gmail.com'), ENCODE(HMAC('bony@gmail.com', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX'), EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4455778542145936'), ENCODE(HMAC('4455778542145936', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX'));
+
+> INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), ENCODE(HMAC('sisy@gmail.com', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX'), EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'), ENCODE(HMAC('4797472753193994', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX'));
+```
+
+### Read Data
+```shell
+> SELECT EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) FROM USERS WHERE EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) LIKE '%al%';
+
+>  SELECT EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) FROM USERS WHERE EMAIL_MAC = ENCODE(HMAC('sisy@gmail.com', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX');
 ```
