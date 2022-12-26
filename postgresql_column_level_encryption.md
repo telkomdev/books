@@ -202,7 +202,9 @@ DECLARE
 BEGIN
     iv = SUBSTRING(encrypted_data, 1, 32);
     cipher_data = SUBSTRING(encrypted_data, 33, LENGTH(encrypted_data) - 32);
-    result = CONVERT_FROM(DECRYPT_IV(DECODE(cipher_data, 'hex'), aes_key::BYTEA, DECODE(iv, 'hex'), 'aes-cbc/pad:pkcs'), 'UTF8');
+    IF cipher_data IS NOT NULL AND cipher_data != '' THEN
+        result = CONVERT_FROM(DECRYPT_IV(DECODE(cipher_data, 'hex'), aes_key::BYTEA, DECODE(iv, 'hex'), 'aes-cbc/pad:pkcs'), 'UTF8');
+    END IF;
     RETURN result;                            
 END;  
 $$;
