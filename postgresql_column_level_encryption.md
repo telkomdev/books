@@ -246,6 +246,16 @@ CREATE TABLE public.USERS (
 > INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) VALUES (EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', 'sisy@gmail.com'), ENCODE(HMAC('sisy@gmail.com', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX'), EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', '4797472753193994'), ENCODE(HMAC('4797472753193994', 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX'));
 ```
 
+### Insert 1 Million Rows Random values
+```sql
+INSERT INTO USERS (EMAIL, EMAIL_MAC, CREDIT_CARD, CREDIT_CARD_MAC) 
+WITH RAW_DATA AS (SELECT substr('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZmnopqrstuvwxyzAB', ceil (random() * 52)::integer, 7) AS EMAIL_RAW,
+    substr('12345678901234567891167890', ceil (random() * 21)::integer, 16) AS CC_RAW FROM generate_series(1, 100000)
+)  SELECT EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x',EMAIL_RAW), 
+    ENCODE(HMAC(EMAIL_RAW, 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX'), EW_AES_256_CBC_ENCRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', CC_RAW), 
+    ENCODE(HMAC(CC_RAW, 'abc$#128djdyAgbjau&YAnmcbagryt5x', 'SHA256'), 'HEX') FROM RAW_DATA;
+```
+
 ### Read Data
 ```shell
 > SELECT EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) FROM USERS WHERE EW_AES_256_CBC_DECRYPT('abc$#128djdyAgbjau&YAnmcbagryt5x', EMAIL) LIKE '%al%';
