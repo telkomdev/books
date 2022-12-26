@@ -107,7 +107,7 @@ mysql> SHOW INDEXES FROM USERS;
 +-------+------------+-----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
 ```
 
-### HMACSHA256
+### HMACSHA256 MySQL Version
 https://github.com/fish3046/MySQL-SHA256-HMAC/blob/master/HMACSHA256.sql
 
 ### HMACSHA256 (Singlestore Version https://www.singlestore.com/)
