@@ -41,3 +41,10 @@ Tk3AQIDBAUGBw==
 -----END OPENSSH PRIVATE KEY----- (press Enter button here, to add new line)
 
 ```
+
+### CRLF
+Replace CRLF to LF
+
+```
+$ sed 's/\r$//' server_ssh.key > server_ssh_backup.key
+```
