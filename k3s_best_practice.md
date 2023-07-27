@@ -5,6 +5,7 @@ Installation instruction based on official docs
 - Windows: https://kubernetes.io/docs/tasks/tools/install-kubectl-windows
 - Linux: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux
 - MacOS: https://kubernetes.io/docs/tasks/tools/install-kubectl-macos
+
 Verify `kubectl` installation
 ```shell
 kubectl version
