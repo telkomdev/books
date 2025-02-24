@@ -28,3 +28,10 @@ Once you found it, just remove that one:
 ```shell
 rm -rf <path to overfull-folder>
 ```
+
+#### Error `df: unrecognized option '--max-depth=1'`
+
+Try to replace `--max-depth=1` flag with `-d 1`
+```shell
+sudo du -h -d 1 /
+```
